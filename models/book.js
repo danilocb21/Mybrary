@@ -13,24 +13,24 @@ const bookSchema = new mongoose.Schema({
   },
   publishDate: {
     type: Date,
-    require: true,
+    required: true,
   },
   pageCount: {
     type: Number,
-    require: true,
+    required: true,
   },
   createdAt: {
     type: Date,
-    require: true,
+    required: true,
     default: Date.now,
   },
   coverImageName: {
     type: String,
-    require: true,
+    required: true,
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,
-    require: true,
+    required: true,
     ref: "Author",
   },
 });
