@@ -47,15 +47,84 @@ router.post("/", (req, res) => {
   book
     .save()
     .then((newBook) => {
-      // res.redirect(`books/${newBook.id}`)
-      res.redirect("books");
+      res.redirect(`/books/${newBook.id}`);
     })
     .catch(() => {
       renderNewPage(res, book, true);
     });
 });
 
+router.get("/:id", (req, res) => {
+  Book.findById(req.params.id)
+    .populate("author")
+    .exec()
+    .then((book) => {
+      res.render("books/show", { book: book });
+    })
+    .catch(() => {
+      res.redirect("/");
+    });
+});
+
+// Edit Book Route
+router.get("/:id/edit", (req, res) => {
+  Book.findById(req.params.id)
+    .then((book) => {
+      renderEditPage(res, book);
+    })
+    .catch(() => {
+      res.redirect("/books");
+    });
+});
+
+// Update Book Route
+router.put("/:id", (req, res) => {
+  let book;
+  Book.findById(req.params.id)
+    .then((foundBook) => {
+      book = foundBook;
+      book.title = req.body.title;
+      book.author = req.body.author;
+      book.publishDate = new Date(req.body.publishDate);
+      book.pageCount = req.body.pageCount;
+      book.description = req.body.description;
+      if (req.body.cover != null && req.body.cover !== "") {
+        saveCover(book, req.body.cover);
+      }
+      return book.save();
+    })
+    .then(() => {
+      res.redirect(`/books/${book.id}`);
+    })
+    .catch(() => {
+      if (book != null) {
+        renderEditPage(res, book, true);
+      } else {
+        res.redirect("/");
+      }
+    });
+});
+
+// Delete Book Route
+router.delete("/:id", (req, res) => {
+  Book.findByIdAndDelete(req.params.id)
+    .then(() => {
+      res.redirect("/books");
+    })
+    .catch(() => {
+      res.redirect("/");
+    });
+});
+
 function renderNewPage(res, book, hasError = false) {
+  renderFormPage(res, book, "new", hasError);
+}
+
+function renderEditPage(res, book, hasError = false) {
+  renderFormPage(res, book, "edit", hasError);
+}
+
+function renderFormPage(res, book, form, hasError = false) {
   Author.find({})
     .then((authors) => {
       const params = {
@@ -63,9 +132,13 @@ function renderNewPage(res, book, hasError = false) {
         book: book,
       };
       if (hasError) {
-        params.errorMessage = "Error creating a book...";
+        if (form == "new") {
+          params.errorMessage = "Error Creating a book...";
+        } else {
+          params.errorMessage = "Error Updating a book...";
+        }
       }
-      res.render("books/new", params);
+      res.render(`books/${form}`, params);
     })
     .catch(() => {
       res.redirect("/books");
