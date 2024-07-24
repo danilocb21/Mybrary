@@ -24,7 +24,7 @@ router.get("/", (req, res) => {
         searchOptions: req.query,
       });
     })
-    .catch((err) => {
+    .catch(() => {
       res.redirect("/");
     });
 });
@@ -50,7 +50,7 @@ router.post("/", (req, res) => {
       // res.redirect(`books/${newBook.id}`)
       res.redirect("books");
     })
-    .catch((err) => {
+    .catch(() => {
       renderNewPage(res, book, true);
     });
 });
@@ -67,7 +67,7 @@ function renderNewPage(res, book, hasError = false) {
       }
       res.render("books/new", params);
     })
-    .catch((err) => {
+    .catch(() => {
       res.redirect("/books");
     });
 }
