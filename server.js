@@ -6,7 +6,6 @@ const express = require("express");
 const app = express();
 const expressLayouts = require("express-ejs-layouts");
 const methodOverride = require("method-override");
-const morgan = require('morgan')
 
 const indexRouter = require("./routes/index");
 const authorRouter = require("./routes/authors");
@@ -20,7 +19,12 @@ app.use(methodOverride("_method"));
 app.use(express.static("public"));
 app.use(express.urlencoded({ limit: "5mb", extended: true }));
 app.use(express.json({ limit: "5mb" }));
-app.use(morgan('dev'))
+
+const PORT = process.env.PORT || 3000;
+if (PORT === 3000) {
+  const morgan = require('morgan');
+  app.use(morgan('dev'));
+}
 
 const mongoose = require("mongoose");
 mongoose.connect(process.env.DATABASE_URL);
@@ -32,7 +36,7 @@ app.use("/", indexRouter);
 app.use("/authors", authorRouter);
 app.use("/books", bookRouter);
 
-app.listen(process.env.PORT || 3000, function () {
+app.listen(PORT, function () {
   console.log(
     `Express server listening on port ${this.address().port} in ${
       app.settings.env
