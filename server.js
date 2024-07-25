@@ -6,6 +6,7 @@ const express = require("express");
 const app = express();
 const expressLayouts = require("express-ejs-layouts");
 const methodOverride = require("method-override");
+const morgan = require('morgan')
 
 const indexRouter = require("./routes/index");
 const authorRouter = require("./routes/authors");
@@ -19,6 +20,7 @@ app.use(methodOverride("_method"));
 app.use(express.static("public"));
 app.use(express.urlencoded({ limit: "5mb", extended: true }));
 app.use(express.json({ limit: "5mb" }));
+app.use(morgan('dev'))
 
 const mongoose = require("mongoose");
 mongoose.connect(process.env.DATABASE_URL);
