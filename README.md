@@ -2,7 +2,7 @@
 
 Projeto criado a partir dos vídeos do canal [Web Dev Simplified](https://www.youtube.com/@WebDevSimplified).
 
-O projeto foi feito com back-end em Node.js (Express) e banco de dados Mongodb.
+O projeto foi feito com back-end em Node.js (Express) e banco de dados MongoDB.
 
 Recursos:
 
